@@ -1,0 +1,85 @@
+/* src/components/Register.css */
+
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f7fa;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.register-form input {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.register-form input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.register-form input.error-input {
+    border-color: #dc3545; /* Red border for error input */
+}
+
+.register-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-form button:hover {
+    background-color: #0056b3;
+}
+
+.success-message {
+    margin-top: 15px;
+    color: #28a745; /* Green for success message */
+    font-weight: bold;
+}
+
+.error-message {
+    margin-top: 15px;
+    color: #dc3545; /* Red for error message */
+    font-weight: bold;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    .register-form {
+        width: 90%; /* Full width on small screens */
+    }
+
+    h2 {
+        font-size: 20px; /* Smaller heading on small screens */
+    }
+}
