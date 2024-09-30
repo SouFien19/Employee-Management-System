@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { loginUser } from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'; // Import the DotLottieReact component
 
 export const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
+  const [showAnimation, setShowAnimation] = useState(false); // State to control animation display
+  const navigate = useNavigate(); // Initialize useNavigate
 
   // useEffect to check if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      navigate('/'); // Redirect to dashboard if already logged in
+      navigate('/'); // Redirecting to the home page
     }
   }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
 
     try {
       const response = await loginUser(email, password);
@@ -28,8 +28,12 @@ export const Login = ({ onLogin }) => {
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('user', JSON.stringify(response.user));
         onLogin(response.user);
-        setSuccess('Login successful!');
-        navigate('/'); // Redirect to dashboard
+        setShowAnimation(true); // Show animation on successful login
+
+        // Redirect after 3 seconds
+        setTimeout(() => {
+          navigate('/'); // Redirect to dashboard
+        }, 1500);
       } else {
         setError('Unexpected response from server.');
       }
@@ -63,44 +67,54 @@ export const Login = ({ onLogin }) => {
           </div>
 
           {error && <p className="text-red-500 mb-4">{error}</p>}
-          {success && <p className="text-green-500 mb-4">{success}</p>}
 
-          <form onSubmit={handleSubmit}>
-            <div className="mb-6">
-              <label htmlFor="email" className="block mb-2 text-sm text-gray-600 dark:text-gray-400">Email Address</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="you@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+          {showAnimation ? (
+            <div className="flex justify-center items-center h-full">
+              <DotLottieReact
+                src="https://lottie.host/74d44ad6-7c6a-4d54-a59d-89fcaa2150ee/cKZ3v51pna.json"
+                loop
+                autoplay
+                style={{ width: '200px', height: '200px' }} // Adjust the size as needed
               />
             </div>
-            <div className="mb-6">
-              <label htmlFor="password" className="block mb-2 text-sm text-gray-600 dark:text-gray-400">Password</label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Your Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full px-4 py-3 text-white bg-indigo-500 rounded-md focus:bg-indigo-600 focus:outline-none"
-            >
-              Sign in
-            </button>
-            <p className="text-sm text-center text-gray-400 mt-4">
-              Don't have an account yet?{' '}
-              <a href="/register" className="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800">Sign up</a>.
-            </p>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="mb-6">
+                <label htmlFor="email" className="block mb-2 text-sm text-gray-600 dark:text-gray-400">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="you@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                />
+              </div>
+              <div className="mb-6">
+                <label htmlFor="password" className="block mb-2 text-sm text-gray-600 dark:text-gray-400">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Your Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full px-4 py-3 text-white bg-indigo-500 rounded-md focus:bg-indigo-600 focus:outline-none"
+              >
+                Sign in
+              </button>
+              <p className="text-sm text-center text-gray-400 mt-4">
+                Don't have an account yet?{' '}
+                <Link to="/register" className="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800">Sign up</Link>.
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -21,7 +21,6 @@ const App = () => {
   const handleLogin = (userData) => {
     setUser(userData);
   };
-  
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -30,14 +29,28 @@ const App = () => {
 
   return (
     <Router>
-      <Navbar user={user} onLogout={handleLogout} />
+      <InnerApp user={user} onLogout={handleLogout} onLogin={handleLogin} />
+    </Router>
+  );
+};
+
+const InnerApp = ({ user, onLogout, onLogin }) => {
+  const location = useLocation(); // Get current location
+
+  // Check if the current path is either '/login' or '/register'
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+
+  return (
+    <>
+      {/* Conditionally render the Navbar */}
+      {!isAuthPage && <Navbar user={user} onLogout={onLogout} />}
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/login" element={<Login onLogin={onLogin} />} />
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Router>
+    </>
   );
 };
 

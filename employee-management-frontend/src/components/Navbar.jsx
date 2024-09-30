@@ -7,13 +7,13 @@ import { RiLogoutCircleRLine } from 'react-icons/ri';
 
 export const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false); // State for mobile menu
-  const [dropdownOpen, setDropdownOpen] = React.useState(false); // State for dropdown menu
+  const [open, setOpen] = React.useState(false); 
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
 
   const handleLogout = async () => {
     try {
       await logoutUser(); // Call the API to log out
-      onLogout(); // Update the user state in App component
+      onLogout(); 
       navigate('/login'); // Redirect to login after logout
     } catch (error) {
       console.error('Logout failed:', error); // Handle any errors here
@@ -23,8 +23,12 @@ export const Navbar = ({ user, onLogout }) => {
   return (
     <header className="bg-white shadow-md">
       <nav className="container mx-auto flex justify-between items-center p-4">
-        <div className="font-bold text-xl text-gray-800">
-          <Link to="/">HR Management</Link>
+        <div className="flex items-center">
+          {/* Logo */}
+          <img src="/work-team.png" alt="Logo" className="h-8 mr-2" /> {/* Adjust height as needed */}
+          <div className="font-bold text-xl text-gray-800">
+            <Link to="/">HR Management</Link>
+          </div>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -88,8 +92,8 @@ export const Navbar = ({ user, onLogout }) => {
                 <Link to="/login" className="flex items-center bg-blue-600 text-white px-4 py-2 rounded transition duration-200 hover:bg-blue-700 mt-2">
                   <AiOutlineLogin className="mr-1" /> Login
                 </Link>
-                <Link to="/register" className="flex items-center bg-blue-600 text-white px-4 py-2 rounded transition duration-200 hover:bg-blue-700 mt-2">
-                  <AiOutlineUserAdd className="mr-1" /> Sign Up
+                <Link to="/register" className="flex items-center bg-blue-600 text-white px-4 py-2 rounded transition duration=200 hover:bg-blue=700 mt=2">
+                  <AiOutlineUserAdd className="mr=1" /> Sign Up
                 </Link>
               </>
             )}
