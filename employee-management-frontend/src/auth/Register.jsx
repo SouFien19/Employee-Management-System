@@ -120,7 +120,6 @@ export const Register = () => {
                 >
                   <option value="employee">Employee</option>
                   <option value="HR">HR</option>
-                  <option value="admin">Admin</option>
                 </select>
               </div>
 
