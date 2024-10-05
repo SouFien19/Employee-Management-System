@@ -3,11 +3,18 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { Navbar } from './components/Navbar';
 import { Login } from './auth/Login';
 import { Register } from './auth/Register';
-import { Home } from './pages/home';  
+import { Home } from './pages/home';
 import { NotFound } from './pages/NotFound';
 import { HRDashboard } from './dashboard/HRDashboard';
 import { EmployeeDash } from './dashboard/EmployeeDash';
+import EmployeeList from './dashboard/employee/EmployeeList'; // Corrected import
+import EmployeeForm from './dashboard/employee/EmployeeForm'; // Corrected import
+import LeaveList from './dashboard/employee/LeaveList'; // Corrected import
+
 import AuthGuard from './components/AuthGuard';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const App = () => {
   const [user, setUser] = useState(() => {
     try {
@@ -25,13 +32,14 @@ const App = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    localStorage.removeItem('access_token'); // Clear token on logout
+    localStorage.removeItem('access_token');
     setUser(null);
   };
 
   return (
     <Router>
       <InnerApp user={user} onLogout={handleLogout} onLogin={handleLogin} />
+      <ToastContainer />
     </Router>
   );
 };
@@ -47,8 +55,29 @@ const InnerApp = ({ user, onLogout, onLogin }) => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login onLogin={onLogin} />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/hr-dashboard" element={<AuthGuard><HRDashboard /></AuthGuard>} /> 
-        <Route path="/employee-dashboard" element={<AuthGuard><EmployeeDash /></AuthGuard>} /> 
+        
+        <Route
+          path="/hr-dashboard"
+          element={
+            <AuthGuard>
+              <HRDashboard />
+            </AuthGuard>
+          }
+        >
+          <Route path="employees" element={<EmployeeList />} />
+          <Route path="create-employee" element={<EmployeeForm />} />
+          <Route path="leaves" element={<LeaveList />} />
+        </Route>
+        
+        <Route
+          path="/employee-dashboard"
+          element={
+            <AuthGuard>
+              <EmployeeDash />
+            </AuthGuard>
+          }
+        />
+        
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

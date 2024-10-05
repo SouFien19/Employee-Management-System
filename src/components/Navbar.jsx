@@ -4,6 +4,7 @@ import { logoutUser } from '../services/api';
 import { FaUserCircle } from 'react-icons/fa';
 import { AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
 import { RiLogoutCircleRLine } from 'react-icons/ri';
+import { Bars3Icon } from '@heroicons/react/24/solid'; // Correct v2 import
 
 export const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -37,9 +38,7 @@ export const Navbar = ({ user, onLogout }) => {
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
-          <svg className={`w-6 h-6 transition-transform duration-300 ${open ? 'transform rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-          </svg>
+          <Bars3Icon className={`w-6 h-6 transition-transform duration-300 ${open ? 'rotate-90' : ''}`} />
         </button>
 
         {/* User Actions */}

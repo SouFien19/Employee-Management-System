@@ -122,3 +122,22 @@ export const deleteLeave = async (id) => {
        throw new Error(error.response?.data || 'Failed to delete leave');
    }
 };
+export const approveLeave = async (id) => {
+  try {
+    const response = await axios.patch(`${API_URL}/leaves/${id}/approve`);
+    return response.data;
+  } catch (error) {
+    console.error('Error approving leave:', error);
+    throw new Error(error.response?.data || 'Failed to approve leave');
+  }
+};
+
+export const rejectLeave = async (id) => {
+  try {
+    const response = await axios.patch(`${API_URL}/leaves/${id}/reject`);
+    return response.data;
+  } catch (error) {
+    console.error('Error rejecting leave:', error);
+    throw new Error(error.response?.data || 'Failed to reject leave');
+  }
+};
