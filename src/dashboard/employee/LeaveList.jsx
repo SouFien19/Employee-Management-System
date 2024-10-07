@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { getLeaves, deleteLeave, approveLeave, rejectLeave } from '../../services/api';
+import { getLeaves, deleteLeave, approveLeave, rejectLeave, getUsers } from '../../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TrashIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const LeaveList = () => {
   const [leaves, setLeaves] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
 
   const fetchLeaves = async () => {
@@ -17,6 +18,15 @@ const LeaveList = () => {
       toast.error(error.message || 'Failed to fetch leaves');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchEmployees = async () => {
+    try {
+      const data = await getUsers(); // Fetching employee data
+      setEmployees(data);
+    } catch (error) {
+      toast.error(error.message || 'Failed to fetch employees');
     }
   };
 
@@ -51,7 +61,8 @@ const LeaveList = () => {
   };
 
   useEffect(() => {
-    fetchLeaves(); // Initial fetch when the component mounts
+    fetchEmployees(); // Fetch employees when component mounts
+    fetchLeaves(); // Initial fetch for leaves
   }, []);
 
   return (
@@ -74,7 +85,10 @@ const LeaveList = () => {
           <tbody>
             {leaves.map((leave) => (
               <tr key={leave.id} className="border-b hover:bg-gray-100">
-                <td className="p-3">{leave.employeeName}</td>
+                {/* Find employee name based on employeeId */}
+                <td className="p-3">
+                  {employees.find(employee => employee.id === leave.employeeId)?.name || 'Unknown'}
+                </td>
                 <td className="p-3">{new Date(leave.startDate).toLocaleDateString()}</td>
                 <td className="p-3">{new Date(leave.endDate).toLocaleDateString()}</td>
                 <td className="p-3">{leave.status}</td>

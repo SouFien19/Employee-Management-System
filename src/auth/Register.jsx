@@ -14,6 +14,7 @@ export const Register = () => {
   const [showAnimation, setShowAnimation] = useState(false); // State to control animation display
   const navigate = useNavigate();
 
+  // Reset form fields on component mount
   useEffect(() => {
     setName('');
     setEmail('');
@@ -21,13 +22,14 @@ export const Register = () => {
     setRole('employee');
   }, []);
 
+  // Show animation on success and redirect after 1500ms
   useEffect(() => {
     if (success) {
       setShowAnimation(true); // Show animation on success
       const timer = setTimeout(() => {
-        setShowAnimation(false); // Hide animation after 2 seconds
+        setShowAnimation(false); // Hide animation after 1500 milliseconds
         navigate('/login'); // Redirect to login after displaying animation
-      }, 3000);
+      }, 1700);
       return () => clearTimeout(timer);
     }
   }, [success, navigate]);

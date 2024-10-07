@@ -7,9 +7,9 @@ import { Home } from './pages/home';
 import { NotFound } from './pages/NotFound';
 import { HRDashboard } from './dashboard/HRDashboard';
 import { EmployeeDash } from './dashboard/EmployeeDash';
-import EmployeeList from './dashboard/employee/EmployeeList'; // Corrected import
-import EmployeeForm from './dashboard/employee/EmployeeForm'; // Corrected import
-import LeaveList from './dashboard/employee/LeaveList'; // Corrected import
+import EmployeeList from './dashboard/employee/EmployeeList'; 
+import EmployeeForm from './dashboard/employee/EmployeeForm';
+import LeaveList from './dashboard/employee/LeaveList';
 
 import AuthGuard from './components/AuthGuard';
 import { ToastContainer } from 'react-toastify';
