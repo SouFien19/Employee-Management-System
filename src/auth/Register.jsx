@@ -25,9 +25,9 @@ export const Register = () => {
   // Show animation on success and redirect after 1500ms
   useEffect(() => {
     if (success) {
-      setShowAnimation(true); // Show animation on success
+      setShowAnimation(true); 
       const timer = setTimeout(() => {
-        setShowAnimation(false); // Hide animation after 1500 milliseconds
+        setShowAnimation(false); 
         navigate('/login'); // Redirect to login after displaying animation
       }, 1700);
       return () => clearTimeout(timer);
