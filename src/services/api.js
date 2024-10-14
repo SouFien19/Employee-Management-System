@@ -85,23 +85,33 @@ export const deleteUser = async (id) => {
 
 // Leave API functions
 export const createLeave = async ({ employeeId, startDate, endDate }) => {
-   try {
-       const response = await axios.post(`${API_URL}/leaves`, { employeeId, startDate, endDate });
-       return response.data;
-   } catch (error) {
-       console.error('Error creating leave:', error);
-       throw new Error(error.response?.data || 'Failed to create leave');
-   }
+  try {
+      const response = await axios.post(`${API_URL}/leaves`, { employeeId, startDate, endDate });
+      return response.data;
+  } catch (error) {
+      console.error('Error creating leave:', error);
+      throw new Error(error.response?.data || 'Failed to create leave');
+  }
 };
 
 export const getLeaves = async () => {
-   try {
-       const response = await axios.get(`${API_URL}/leaves`);
-       return response.data;
-   } catch (error) {
-       console.error('Error fetching leaves:', error);
-       throw new Error(error.response?.data || 'Failed to fetch leaves');
-   }
+  try {
+      const response = await axios.get(`${API_URL}/leaves`);
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching leaves:', error);
+      throw new Error(error.response?.data || 'Failed to fetch leaves');
+  }
+};
+
+export const getNotifications = async (employeeId) => {
+  try {
+      const response = await axios.get(`${API_URL}/leaves/notifications/${employeeId}`);
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching notifications:', error);
+      throw new Error(error.response?.data || 'Failed to fetch notifications');
+  }
 };
 
 export const updateLeave = async (id, updateData) => {
