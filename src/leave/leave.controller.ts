@@ -1,4 +1,3 @@
-// leave.controller.ts
 import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
 import { LeaveService } from './leave.service';
 import { Leave } from './leave.schema';
@@ -31,6 +30,11 @@ export class LeaveController {
   @Patch(':id/reject') // New route for rejecting leave
   async rejectLeave(@Param('id') id: number): Promise<Leave> {
     return this.leaveService.updateLeave(id, { status: 'rejected' });
+  }
+
+  @Get('notifications/:employeeId')
+  async getNotifications(@Param('employeeId') employeeId: number): Promise<Leave[]> {
+    return this.leaveService.getLeavesByEmployeeId(employeeId);
   }
 
   @Patch(':id') // Update leave with partial data

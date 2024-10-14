@@ -17,4 +17,7 @@ export class Leave {
 
   @Column({ default: 'pending' })
   status: string; // e.g., 'pending', 'approved', 'rejected'
+
+  @Column({ nullable: true })
+  notificationMessage: string; // New field for notifications
 }

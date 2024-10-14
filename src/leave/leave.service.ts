@@ -1,4 +1,3 @@
-// leave.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,10 +21,26 @@ export class LeaveService {
 
   async updateLeave(id: number, updateData: Partial<Leave>): Promise<Leave> {
     await this.leaveRepository.update(id, updateData);
-    return this.leaveRepository.findOne({ where: { id } });
+    const updatedLeave = await this.leaveRepository.findOne({ where: { id } });
+
+    // Set notification message based on status
+    if (updatedLeave) {
+      if (updatedLeave.status === 'approved') {
+        updatedLeave.notificationMessage = 'Your leave request has been approved.';
+      } else if (updatedLeave.status === 'rejected') {
+        updatedLeave.notificationMessage = 'Your leave request has been rejected.';
+      }
+      await this.leaveRepository.save(updatedLeave);
+    }
+
+    return updatedLeave;
   }
 
   async deleteLeave(id: number): Promise<void> {
     await this.leaveRepository.delete(id);
+  }
+
+  async getLeavesByEmployeeId(employeeId: number): Promise<Leave[]> {
+    return this.leaveRepository.find({ where: { employeeId } });
   }
 }
