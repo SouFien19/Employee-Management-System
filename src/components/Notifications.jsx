@@ -16,11 +16,11 @@ const ToastNotification = ({ message, type, onClose }) => {
     const getColor = () => {
         switch (type) {
             case 'approved':
-                return 'bg-green-500';
+                return 'bg-green-600';
             case 'rejected':
-                return 'bg-red-500';
+                return 'bg-red-600';
             default:
-                return 'bg-blue-500';
+                return 'bg-blue-600';
         }
     };
 
@@ -36,7 +36,10 @@ const ToastNotification = ({ message, type, onClose }) => {
     };
 
     return (
-        <div className={`flex items-center justify-between w-full max-w-sm p-4 mb-4 text-white rounded-lg shadow-md ${getColor()}`}>
+        <div
+            className={`flex items-center justify-between p-4 mb-4 rounded-lg shadow-lg text-white transition-transform transform hover:scale-105 ${getColor()}`}
+            style={{ zIndex: 9999 }} // Ensures the notification stays on top of other elements
+        >
             <div className="flex items-center">
                 {getIcon()}
                 <p className="ml-2 text-base font-medium">{message}</p>

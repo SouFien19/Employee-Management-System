@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import { FaUsers, FaUserPlus, FaClipboardList } from 'react-icons/fa'; // Importing icons
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import { FaUsers, FaUserPlus, FaClipboardList } from 'react-icons/fa'; 
 
 export const HRDashboard = () => {
   const location = useLocation();

@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { loginUser } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react'; 
-import { toast, ToastContainer } from 'react-toastify'; 
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { toast, ToastContainer } from 'react-toastify';
 
 export const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [showAnimation, setShowAnimation] = useState(false); 
-  const navigate = useNavigate(); 
+  const [showAnimation, setShowAnimation] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    if (token) navigate('/'); 
+    if (token) navigate('/');
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -27,22 +27,17 @@ export const Login = ({ onLogin }) => {
 
     try {
       const response = await loginUser(email, password);
-      
-      console.log('Login response:', response);
 
       if (response && response.access_token) {
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('user', JSON.stringify(response.user));
         onLogin(response.user);
-        
-        console.log('Login successful, showing animation...');
+
         setShowAnimation(true);
 
         setTimeout(() => {
           setShowAnimation(false);
-          // Redirect based on user role
           const redirectPath = response.user.role === 'HR' ? '/hr-dashboard/employees' : '/employee-dashboard';
-          console.log('Redirecting to:', redirectPath);
           navigate(redirectPath);
         }, 1500);
       } else {
@@ -55,7 +50,16 @@ export const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="flex items-center min-h-screen bg-white dark:bg-gray-900">
+    <div className="relative flex items-center min-h-screen bg-white dark:bg-gray-900">
+      {/* Back Icon */}
+      <Link to="/" className="absolute top-5 left-5">
+        <img
+          src="https://img.icons8.com/?size=100&id=26144&format=png&color=000000"
+          alt="Back to Home"
+          className="w-12 h-12 sm:w-14 sm:h-14"
+        />
+      </Link>
+
       <div className="container mx-auto flex justify-center items-center space-x-10">
         <div className="w-1/2 flex items-center justify-center">
           <DotLottieReact

@@ -1,36 +1,35 @@
-// src/dashboard/EmployeeDash.js
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { getLeaves, createLeave, getNotifications } from '../services/api';
-import ToastNotification from '../components/Notifications'; // Import the new ToastNotification component
-import { Link } from 'react-router-dom'; // Ensure Link is imported
+import ToastNotification from '../components/Notifications'; // Correct import
+import { Link } from 'react-router-dom';
 
 export const EmployeeDash = () => {
-    const [lastLeave, setLastLeave] = useState(null); // Store only the last leave
+    const [lastLeave, setLastLeave] = useState(null);
     const [notifications, setNotifications] = useState([]);
     const [newLeave, setNewLeave] = useState({ employeeId: '', startDate: '', endDate: '' });
     const storedUser = JSON.parse(localStorage.getItem('user'));
-    const userId = storedUser ? storedUser.id : null; // Handle case where user is not found
+    const userId = storedUser ? storedUser.id : null;
 
     useEffect(() => {
         const fetchLeavesAndNotifications = async () => {
-            if (!userId) return; // Exit if userId is not available
+            if (!userId) return;
 
             try {
                 const leaveData = await getLeaves();
                 const userLeaves = leaveData.filter(leave => leave.employeeId === userId);
-                
-                // Set only the last leave request
+
                 if (userLeaves.length > 0) {
-                    setLastLeave(userLeaves[userLeaves.length - 1]); // Get the last leave
+                    setLastLeave(userLeaves[userLeaves.length - 1]);
                 }
 
-                // Fetch notifications
                 const notificationData = await getNotifications(userId);
-                setNotifications(notificationData.map(leave => ({
-                    message: leave.notificationMessage,
-                    type: leave.status === 'approved' ? 'approved' : 'rejected'
-                })).filter(msg => msg));
+                setNotifications(
+                    notificationData.map(leave => ({
+                        message: leave.notificationMessage,
+                        type: leave.status === 'approved' ? 'approved' : 'rejected'
+                    }))
+                );
             } catch (error) {
                 toast.error('Failed to load data');
             }
@@ -48,20 +47,15 @@ export const EmployeeDash = () => {
         try {
             newLeave.employeeId = userId;
             const createdLeave = await createLeave(newLeave);
-            setLastLeave(createdLeave); // Set the last leave to be the newly created one
-            setNewLeave({ employeeId: '', startDate: '', endDate: '' }); // Reset form
+            setLastLeave(createdLeave);
+            setNewLeave({ employeeId: '', startDate: '', endDate: '' });
             toast.success('Leave request submitted');
-            
-            // Add notification for approval
-            setNotifications(prev => [...prev, { message: 'Your leave request has been submitted.', type: 'approved' }]);
         } catch (error) {
             toast.error('Failed to submit leave request');
-            
-            // Add notification for rejection
-            setNotifications(prev => [...prev, { message: 'Your leave request submission failed.', type: 'rejected' }]);
         }
     };
 
+    // Define handleCloseNotification here
     const handleCloseNotification = (index) => {
         setNotifications(notifications.filter((_, i) => i !== index)); // Remove notification at index
     };
@@ -73,7 +67,7 @@ export const EmployeeDash = () => {
                 <nav>
                     <ul>
                         <li className="mb-4">
-                            <Link to="/employee-dash" className="hover:text-gray-300">Your Leaves</Link>
+                            <Link to="/employee-dashboard" className="hover:text-gray-300">Your Leaves</Link>
                         </li>
                         <li className="mb-4">
                             <Link to="/profile" className="hover:text-gray-300">Profile</Link>
@@ -90,7 +84,7 @@ export const EmployeeDash = () => {
 
                 {/* Notifications */}
                 {notifications.length > 0 && (
-                    <div className="mb-4">
+                    <div className="fixed bottom-4 right-4 flex flex-col space-y-2">
                         {notifications.map((notif, index) => (
                             <ToastNotification 
                                 key={index} 
