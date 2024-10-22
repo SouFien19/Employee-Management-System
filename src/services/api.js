@@ -1,4 +1,3 @@
-// src/services/api.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:4000'; 
@@ -132,6 +131,7 @@ export const deleteLeave = async (id) => {
        throw new Error(error.response?.data || 'Failed to delete leave');
    }
 };
+
 export const approveLeave = async (id) => {
   try {
     const response = await axios.patch(`${API_URL}/leaves/${id}/approve`);
@@ -149,5 +149,60 @@ export const rejectLeave = async (id) => {
   } catch (error) {
     console.error('Error rejecting leave:', error);
     throw new Error(error.response?.data || 'Failed to reject leave');
+  }
+};
+
+// Performance Evaluation API functions
+export const createEvaluation = async (evaluationData) => {
+  try {
+    const response = await axios.post(`${API_URL}/evaluations`, evaluationData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating evaluation:', error);
+    throw new Error(error.response?.data || 'Failed to create evaluation');
+  }
+};
+
+export const getEvaluations = async (employeeId) => {
+  try {
+    const response = await axios.get(`${API_URL}/evaluations`, {
+      params: { employeeId } // Pass employeeId as a query parameter
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching evaluations:', error);
+    throw new Error(error.response?.data || 'Failed to fetch evaluations');
+  }
+};
+
+// Time Tracking API functions
+export const logTime = async (timeEntry) => {
+  try {
+    const response = await axios.post(`${API_URL}/time-tracking`, timeEntry);
+    return response.data;
+  } catch (error) {
+    console.error('Error logging time:', error);
+    throw new Error(error.response?.data || 'Failed to log time');
+  }
+};
+
+export const getLoggedHours = async (employeeId) => {
+  try {
+    const response = await axios.get(`${API_URL}/time-tracking/${employeeId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching logged hours:', error);
+    throw new Error(error.response?.data || 'Failed to fetch logged hours');
+  }
+};
+
+// Reports API functions
+export const getReports = async (employeeId) => {
+  try {
+    const response = await axios.get(`${API_URL}/reports/${employeeId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    throw new Error(error.response?.data || 'Failed to fetch reports');
   }
 };

@@ -10,10 +10,15 @@ import { EmployeeDash } from './dashboard/EmployeeDash';
 import EmployeeList from './dashboard/employee/EmployeeList'; 
 import EmployeeForm from './dashboard/employee/EmployeeForm';
 import LeaveList from './dashboard/employee/LeaveList';
+import PerformanceEvaluationForm from './dashboard/employee/CreateEvaluation'; // Add this import
+import PerformanceEvaluationList from './dashboard/employee/PerformanceEvaluationList'; // Add this import
+import ReportList from './dashboard/employee/Reports'; // Add this import
+import LogTime from './dashboard/employee/LogTime'; // Add this import
 
 import AuthGuard from './components/AuthGuard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import TimeTrackingList from './dashboard/employee/TimeTrackingList';
 
 const App = () => {
   const [user, setUser] = useState(() => {
@@ -67,7 +72,12 @@ const InnerApp = ({ user, onLogout, onLogin }) => {
           <Route path="employees" element={<EmployeeList />} />
           <Route path="create-employee" element={<EmployeeForm />} />
           <Route path="leaves" element={<LeaveList />} />
-        </Route>
+          <Route path="performance-evaluations" element={<PerformanceEvaluationList />} /> {/* List of evaluations */}
+          <Route path="create-performance-evaluation" element={<PerformanceEvaluationForm />} /> {/* Create evaluation */}
+          <Route path="reports" element={<ReportList />} /> {/* Reports */}
+          <Route path="log-time" element={<LogTime />} />
+          <Route path="time-tracking" element={<TimeTrackingList />} /> 
+          /</Route>{/* Log time */}
         
         <Route
           path="/employee-dashboard"
