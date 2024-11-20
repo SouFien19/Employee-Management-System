@@ -7,12 +7,13 @@ import { TrashIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 const LeaveList = () => {
   const [leaves, setLeaves] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   const fetchLeaves = async () => {
     setLoading(true);
     try {
       const data = await getLeaves();
+      console.log('Fetched Leaves:', data); // Log the response to check the structure
       setLeaves(data);
     } catch (error) {
       toast.error(error.message || 'Failed to fetch leaves');
@@ -23,7 +24,7 @@ const LeaveList = () => {
 
   const fetchEmployees = async () => {
     try {
-      const data = await getUsers(); // Fetching employee data
+      const data = await getUsers();
       setEmployees(data);
     } catch (error) {
       toast.error(error.message || 'Failed to fetch employees');
@@ -34,7 +35,7 @@ const LeaveList = () => {
     try {
       await deleteLeave(id);
       toast.success('Leave request deleted successfully');
-      fetchLeaves(); // Refresh the leave list
+      fetchLeaves();
     } catch (error) {
       toast.error(error.message || 'Failed to delete leave request');
     }
@@ -44,25 +45,30 @@ const LeaveList = () => {
     try {
       await approveLeave(id);
       toast.success('Leave request approved successfully');
-      fetchLeaves(); // Refresh the leave list to reflect the updated status
+      fetchLeaves();
     } catch (error) {
       toast.error(error.message || 'Failed to approve leave request');
     }
   };
 
   const handleReject = async (id) => {
-    try {
-      await rejectLeave(id);
-      toast.success('Leave request rejected successfully');
-      fetchLeaves(); // Refresh the leave list to reflect the updated status
-    } catch (error) {
-      toast.error(error.message || 'Failed to reject leave request');
+    const reason = prompt('Please enter the reason for rejection:');
+    if (reason) {
+      try {
+        await rejectLeave(id, reason);
+        toast.success('Leave request rejected successfully');
+        fetchLeaves();
+      } catch (error) {
+        toast.error(error.message || 'Failed to reject leave request');
+      }
+    } else {
+      toast.info('Rejection cancelled');
     }
   };
 
   useEffect(() => {
-    fetchEmployees(); // Fetch employees when component mounts
-    fetchLeaves(); // Initial fetch for leaves
+    fetchEmployees();
+    fetchLeaves();
   }, []);
 
   return (
@@ -70,7 +76,7 @@ const LeaveList = () => {
       <h2 className="text-2xl font-semibold mb-4">Leave List</h2>
       <ToastContainer />
       {loading ? (
-        <div>Loading...</div> // Add a loading state
+        <div>Loading...</div>
       ) : (
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
@@ -79,19 +85,20 @@ const LeaveList = () => {
               <th className="p-3 text-left">Start Date</th>
               <th className="p-3 text-left">End Date</th>
               <th className="p-3 text-left">Status</th>
+              <th className="p-3 text-left">Reason</th>
               <th className="p-3 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {leaves.map((leave) => (
               <tr key={leave.id} className="border-b hover:bg-gray-100">
-                {/* Find employee name based on employeeId */}
                 <td className="p-3">
                   {employees.find(employee => employee.id === leave.employeeId)?.name || 'Unknown'}
                 </td>
                 <td className="p-3">{new Date(leave.startDate).toLocaleDateString()}</td>
                 <td className="p-3">{new Date(leave.endDate).toLocaleDateString()}</td>
                 <td className="p-3">{leave.status}</td>
+                <td className="p-3">{leave.reason || 'No reason provided'}</td>
                 <td className="p-3">
                   <button
                     onClick={() => handleApprove(leave.id)}

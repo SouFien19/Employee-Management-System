@@ -1,4 +1,3 @@
-// src/components/ToastNotification.js
 import React, { useEffect } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Import Material Icon for approved
 import CancelIcon from '@mui/icons-material/Cancel'; // Import Material Icon for rejected
@@ -31,7 +30,7 @@ const ToastNotification = ({ message, type, onClose }) => {
             case 'rejected':
                 return <CancelIcon className="h-6 w-6" />;
             default:
-                return null;
+                return <CheckCircleIcon className="h-6 w-6" />;
         }
     };
 

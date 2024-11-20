@@ -72,12 +72,12 @@ const InnerApp = ({ user, onLogout, onLogin }) => {
           <Route path="employees" element={<EmployeeList />} />
           <Route path="create-employee" element={<EmployeeForm />} />
           <Route path="leaves" element={<LeaveList />} />
-          <Route path="performance-evaluations" element={<PerformanceEvaluationList />} /> {/* List of evaluations */}
-          <Route path="create-performance-evaluation" element={<PerformanceEvaluationForm />} /> {/* Create evaluation */}
-          <Route path="reports" element={<ReportList />} /> {/* Reports */}
+          <Route path="performance-evaluations" element={<PerformanceEvaluationList />} />
+          <Route path="create-performance-evaluation" element={<PerformanceEvaluationForm />} />
+          <Route path="reports" element={<ReportList />} />
           <Route path="log-time" element={<LogTime />} />
-          <Route path="time-tracking" element={<TimeTrackingList />} /> 
-          /</Route>{/* Log time */}
+          <Route path="time-tracking" element={<TimeTrackingList />} />
+        </Route>
         
         <Route
           path="/employee-dashboard"
@@ -93,5 +93,6 @@ const InnerApp = ({ user, onLogout, onLogin }) => {
     </>
   );
 };
+
 
 export default App;

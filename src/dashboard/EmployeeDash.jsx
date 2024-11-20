@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { getLeaves, createLeave, getNotifications } from '../services/api';
-import ToastNotification from '../components/Notifications'; // Correct import
+import ToastNotification from '../components/Notifications'; // Ensure this component is correctly implemented
 import { Link } from 'react-router-dom';
 
 export const EmployeeDash = () => {
-    const [lastLeave, setLastLeave] = useState(null);
+    const [, setLastLeave] = useState(null);
+    const [allLeaves, setAllLeaves] = useState([]);
     const [notifications, setNotifications] = useState([]);
-    const [newLeave, setNewLeave] = useState({ employeeId: '', startDate: '', endDate: '' });
+    const [newLeave, setNewLeave] = useState({
+        employeeId: '',
+        startDate: '',
+        endDate: '',
+        reason: ''
+    });
     const storedUser = JSON.parse(localStorage.getItem('user'));
     const userId = storedUser ? storedUser.id : null;
 
@@ -21,6 +28,7 @@ export const EmployeeDash = () => {
 
                 if (userLeaves.length > 0) {
                     setLastLeave(userLeaves[userLeaves.length - 1]);
+                    setAllLeaves(userLeaves);
                 }
 
                 const notificationData = await getNotifications(userId);
@@ -39,8 +47,30 @@ export const EmployeeDash = () => {
 
     const handleCreateLeave = async (e) => {
         e.preventDefault();
-        if (!newLeave.startDate || !newLeave.endDate) {
-            toast.error('Please fill in both start and end dates.');
+
+        // Validate that all fields are filled in
+        if (!newLeave.startDate || !newLeave.endDate || !newLeave.reason) {
+            toast.error('Please fill in all fields including reason for leave.');
+            return;
+        }
+
+        // Check for overlapping dates with existing leave requests
+        const isOverlapping = allLeaves.some(leave => {
+            const leaveStart = new Date(leave.startDate);
+            const leaveEnd = new Date(leave.endDate);
+            const newLeaveStart = new Date(newLeave.startDate);
+            const newLeaveEnd = new Date(newLeave.endDate);
+
+            // Check if the new leave overlaps with an existing leave
+            return (
+                (newLeaveStart >= leaveStart && newLeaveStart <= leaveEnd) ||
+                (newLeaveEnd >= leaveStart && newLeaveEnd <= leaveEnd) ||
+                (newLeaveStart <= leaveStart && newLeaveEnd >= leaveEnd)
+            );
+        });
+
+        if (isOverlapping) {
+            toast.error('The selected dates overlap with an existing leave request.');
             return;
         }
 
@@ -48,16 +78,16 @@ export const EmployeeDash = () => {
             newLeave.employeeId = userId;
             const createdLeave = await createLeave(newLeave);
             setLastLeave(createdLeave);
-            setNewLeave({ employeeId: '', startDate: '', endDate: '' });
+            setAllLeaves(prevLeaves => [...prevLeaves, createdLeave]); // Add the new leave to the list
+            setNewLeave({ employeeId: '', startDate: '', endDate: '', reason: '' });
             toast.success('Leave request submitted');
         } catch (error) {
             toast.error('Failed to submit leave request');
         }
     };
 
-    // Define handleCloseNotification here
     const handleCloseNotification = (index) => {
-        setNotifications(notifications.filter((_, i) => i !== index)); // Remove notification at index
+        setNotifications(notifications.filter((_, i) => i !== index));
     };
 
     return (
@@ -80,42 +110,45 @@ export const EmployeeDash = () => {
             </aside>
 
             <main className="flex-1 p-8">
-                <h2 className="text-2xl font-bold mb-6">Your Last Leave Request</h2>
+                <h2 className="text-2xl font-bold mb-6">Your Leave Requests</h2>
 
                 {/* Notifications */}
                 {notifications.length > 0 && (
                     <div className="fixed bottom-4 right-4 flex flex-col space-y-2">
                         {notifications.map((notif, index) => (
-                            <ToastNotification 
-                                key={index} 
-                                message={notif.message} 
-                                type={notif.type} 
-                                onClose={() => handleCloseNotification(index)} 
+                            <ToastNotification
+                                key={index}
+                                message={notif.message}
+                                type={notif.type}
+                                onClose={() => handleCloseNotification(index)}
                             />
                         ))}
                     </div>
                 )}
 
-                {/* Display Last Leave Request */}
-                {lastLeave ? (
+                {/* Display All Leave Requests */}
+                {allLeaves.length > 0 ? (
                     <table className="min-w-full bg-white shadow-md rounded-lg mb-6">
                         <thead>
                             <tr className="bg-gray-200">
                                 <th className="px-6 py-3">Start Date</th>
                                 <th className="px-6 py-3">End Date</th>
+                                <th className="px-6 py-3">Reason</th>
                                 <th className="px-6 py-3">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr key={lastLeave.id} className="border-b hover:bg-gray-100">
-                                <td className="px-6 py-4">{new Date(lastLeave.startDate).toLocaleDateString()}</td>
-                                <td className="px-6 py-4">{new Date(lastLeave.endDate).toLocaleDateString()}</td>
-                                <td className="px-6 py-4">{lastLeave.status}</td>
-                            </tr>
+                            {allLeaves.map(leave => (
+                                <tr key={leave.id} className="border-b hover:bg-gray-100">
+                                    <td className="px-6 py-4">{new Date(leave.startDate).toLocaleDateString()}</td>
+                                    <td className="px-6 py-4">{new Date(leave.endDate).toLocaleDateString()}</td>
+                                    <td className="px-6 py-4">{leave.reason}</td>
+                                    <td className="px-6 py-4">{leave.status}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 ) : (
-                    // Message when no leaves are found
                     <div className="bg-white p-5 rounded-lg shadow-md text-center">
                         <p className="text-lg font-semibold">You have no leave requests.</p>
                         <p>Please submit a request using the form below.</p>
@@ -124,7 +157,7 @@ export const EmployeeDash = () => {
 
                 {/* Leave Request Form */}
                 <div className="mb-4 bg-white p-5 rounded-lg shadow-md">
-                    <form onSubmit={handleCreateLeave} className="flex items-center space-x-4">
+                    <form onSubmit={handleCreateLeave} className="flex flex-col space-y-4">
                         <input
                             type="date"
                             className="border p-2 rounded"
@@ -137,6 +170,13 @@ export const EmployeeDash = () => {
                             className="border p-2 rounded"
                             value={newLeave.endDate}
                             onChange={(e) => setNewLeave({ ...newLeave, endDate: e.target.value })}
+                            required
+                        />
+                        <textarea
+                            placeholder="Reason for leave"
+                            className="border p-2 rounded"
+                            value={newLeave.reason}
+                            onChange={(e) => setNewLeave({ ...newLeave, reason: e.target.value })}
                             required
                         />
                         <button

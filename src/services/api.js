@@ -1,6 +1,8 @@
-import axios from 'axios';
+import axios from 'axios'; 
 
-const API_URL = 'http://localhost:4000'; 
+import { connectedUserdata } from './utils';
+
+const API_URL = 'http://localhost:4000';
 
 // Auth API functions
 export const loginUser = async (email, password) => {
@@ -82,16 +84,22 @@ export const deleteUser = async (id) => {
   }
 };
 
-// Leave API functions
-export const createLeave = async ({ employeeId, startDate, endDate }) => {
+export const createLeave = async ({ employeeId, startDate, endDate, reason }) => {
   try {
-      const response = await axios.post(`${API_URL}/leaves`, { employeeId, startDate, endDate });
+      // Ensure that the `reason` field is included in the request body
+      const response = await axios.post(`${API_URL}/leaves`, { 
+          employeeId, 
+          startDate, 
+          endDate, 
+          reason 
+      });
       return response.data;
   } catch (error) {
       console.error('Error creating leave:', error);
       throw new Error(error.response?.data || 'Failed to create leave');
   }
 };
+
 
 export const getLeaves = async () => {
   try {
@@ -163,17 +171,33 @@ export const createEvaluation = async (evaluationData) => {
   }
 };
 
-export const getEvaluations = async (employeeId) => {
+
+// API call to fetch evaluations
+export const getEvaluations = async () => {
   try {
+    const user = connectedUserdata(); // Fetch connected user data
     const response = await axios.get(`${API_URL}/evaluations`, {
-      params: { employeeId } // Pass employeeId as a query parameter
+      params:  { employeeId: user.id }  // Pass employeeId if it's available
     });
+
     return response.data;
   } catch (error) {
     console.error('Error fetching evaluations:', error);
     throw new Error(error.response?.data || 'Failed to fetch evaluations');
   }
 };
+
+export const getAllEvaluations = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/evaluations`)
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching evaluations:', error);
+    throw new Error(error.response?.data || 'Failed to fetch evaluations');
+  }
+};
+
 
 // Time Tracking API functions
 export const logTime = async (timeEntry) => {
