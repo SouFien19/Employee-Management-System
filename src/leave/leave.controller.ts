@@ -8,12 +8,13 @@ export class LeaveController {
 
   @Post()
   async createLeave(
-    @Body() leaveData: { employeeId: number; startDate: Date; endDate: Date }
+    @Body() leaveData: { employeeId: number; startDate: Date; endDate: Date; reason: string }
   ): Promise<Leave> {
     return this.leaveService.createLeave(
       leaveData.employeeId,
       leaveData.startDate,
-      leaveData.endDate
+      leaveData.endDate,
+      leaveData.reason
     );
   }
 

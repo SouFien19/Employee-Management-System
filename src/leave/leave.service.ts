@@ -10,8 +10,8 @@ export class LeaveService {
     private leaveRepository: Repository<Leave>,
   ) {}
 
-  async createLeave(employeeId: number, startDate: Date, endDate: Date): Promise<Leave> {
-    const leave = this.leaveRepository.create({ employeeId, startDate, endDate, status: 'pending' });
+  async createLeave(employeeId: number, startDate: Date, endDate: Date, reason: string): Promise<Leave> {
+    const leave = this.leaveRepository.create({ employeeId, startDate, endDate, reason, status: 'pending' });
     return this.leaveRepository.save(leave);
   }
 

@@ -15,6 +15,9 @@ export class Leave {
   @Column()
   endDate: Date;
 
+  @Column({ nullable: false })
+  reason: string; // New field for reason for leave
+
   @Column({ default: 'pending' })
   status: string; // e.g., 'pending', 'approved', 'rejected'
 

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete, Query, ParseIntPipe, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete,Request, ParseIntPipe, NotFoundException } from '@nestjs/common';
 import { EvaluationService } from './evaluation.service';
 import { PerformanceEvaluation } from './evaluation.schema';
 
@@ -12,8 +12,14 @@ export class EvaluationController {
   }
 
   @Get()
-  async getEvaluations(@Query('employeeId', ParseIntPipe) employeeId: number): Promise<PerformanceEvaluation[]> {
-    return this.evaluationService.getEvaluations(employeeId);
+  async getEvaluations(@Request() req): Promise<PerformanceEvaluation[]> {
+    // Use user.id (or other relevant user data) to retrieve evaluations
+    return this.evaluationService.getEvaluations(req);  // Assuming user has an 'id' property
+  }
+  @Get()
+  async getAllEvaluations(): Promise<PerformanceEvaluation[]> {
+    // Handle the case when no employeeId is provided (default to 0 if not found)
+    return this.evaluationService.getAllEvaluations(); 
   }
 
   @Patch(':id')
